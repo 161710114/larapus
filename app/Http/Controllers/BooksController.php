@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Datatables;
 use App\Book;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\BorrowLog;
+use Illuminate\Support\Facades\Auth;
+use App\Exceptions\BookException;
 class BooksController extends Controller
 {
     /**
@@ -38,6 +41,34 @@ class BooksController extends Controller
             return view('books.index')->with(compact('html'));
     }
 
+    public function borrow($id)
+{
+    try {
+$book = Book::findOrFail($id);
+Auth::user()->borrow($book);
+Session::flash("flash_notification", [
+"level"=>"success",
+"message"=>"Berhasil meminjam $book->title"
+]);
+} catch (ModelNotFoundException $e) {
+Session::flash("flash_notification", [
+"level"=>"danger",
+"message"=>"Buku tidak ditemukan."
+]);
+} catch (BookException $e) {
+    Session::flash("flash_notification", [
+    "level"
+    => "danger",
+    "message" => $e->getMessage()
+    ]);
+}
+
+
+return redirect('/');
+}
+
+
+
 
 
     /**
@@ -56,7 +87,7 @@ class BooksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreBookRequest $request)
+    public function store(Request $request)
     {
         $this->validate($request, [
             'title'     => 'required|unique:books,title',
@@ -133,7 +164,7 @@ class BooksController extends Controller
             ]);
 
             $book = Book::find($id);
-            $book->update($request->all());
+            if(!$book->update($request->all())) return redirect()->back();
 
             if ($request->hasFile('cover')) {
                 // menambil cover yang diupload berikut ekstensinya
