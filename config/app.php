@@ -165,6 +165,7 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
 // alias-> 'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
     
     ],
 

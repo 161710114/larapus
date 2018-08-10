@@ -37,11 +37,24 @@ Session::flash("flash_notification", [
 return false;
 }
 });
+
+self::deleting(function($book)
+{
+if ($book->borrowLogs()->count() > 0) {
+Session::flash("flash_notification", [
+"level"=>"danger",
+"message"=>"Buku $book->title sudah pernah dipinjam."
+]);
+return false;
+}
+});
+
 }
 public function getBorrowedAttribute()
 {
 return $this->borrowLogs()->borrowed()->count();
 }
+
 
 }
 

@@ -53,10 +53,19 @@
                                 <a class="nav-link" href="{{ route('authors.index') }}">Penulis</a>
                             </li>
                     
-                            @endrole
+                            
                               <li class="nav-item {{ Request::is('admin/books') ? 'active ' : '' }}">
                                 <a class="nav-link" href="{{ route('books.index') }}">Buku</a>
                             </li>
+                            
+                            <li><a href="{{ route('members.index') }}">Member</a></li>
+                            
+                            @endrole
+                            
+                            @if (auth()->check())
+                <li><a href="{{ url('/settings/profile') }}">Profil</a></li>
+                        @endif
+
                             {{-- <li class="nav-item {{ Request::is('admin/members') ? 'active ' : '' }}">
                                 <a class="nav-link" href="{{ route('members.index') }}">Member</a>
                             </li>
@@ -112,6 +121,8 @@
         </main>
     </div>
     {{--  JS  --}}
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
